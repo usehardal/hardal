@@ -33,6 +33,7 @@ import SendToHardal from 'hardal'
  const sendCustomEvent = () => {
     const config = {
       apiKey: '',
+      customDomain: '',
       projectId: 372905,
       eventType: 'click-request-demo',
       eventValue: '',
@@ -49,7 +50,8 @@ import SendToHardal from 'hardal'
 ```
 In the above example, the sendCustomEvent function is called with a configuration object named config. The configuration object includes the following properties:
 
-- `apiKey`: Your Hardal API key. Replace 'YOUR_API_KEY' with your actual API key.
+- `apiKey`: Your Hardal API key. Replace 'YOUR_API_KEY' with your actual API key. To get create your *Hardal* account, raise a request [here](https://usehardal.com/).
+- `customDomain`: Add your custom domain to bypassing adblocker and more data accuracy through server-side. e.g., 'ss.yourdomain.com').
 - `projectId`: The ID of the project to which you want to send the event.
 - `eventType`: The type of the event (e.g., 'click-request-demo').
 - `eventValue`: The value associated with the event (leave it as an empty string for now, or provide a specific value if needed).
