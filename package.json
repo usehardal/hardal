@@ -1,13 +1,13 @@
 {
   "name": "hardal",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "An official package to sending server request to Hardal",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/hardal.min.js",
+  "module": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "watch": "tsc -w"
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,11 @@
     "url": "https://github.com/usehardal/hardal/issues"
   },
   "devDependencies": {
-    "typescript": "^4.3.5"
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.22.20",
+    "babel-loader": "^9.1.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
   },
   "homepage": "https://github.com/usehardal/hardal#readme"
 }
