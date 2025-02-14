@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://usehardal.com/?utm_source=github&utm_medium=gatsby_plugin_logo" target="_blank">
-    <img src="https://res.cloudinary.com/raufsamestone/image/upload/v1671398927/hardal/gj5urlgigxm9axbpp1oh.svg" alt="Hardal" width="180" height="84">
+  <a href="https://usehardal.com/?utm_source=github&utm_medium=github" target="_blank">
+    <img src="https://res.cloudinary.com/hardal/image/upload/v1739542616/logo/t1gzroksoigjzjwe3vdq.svg" alt="Hardal" width="180" height="84">
   </a>
 </p>
 
@@ -10,49 +10,50 @@
 
 An official plugin to add the [Hardal](https://usehardal.com/) tracking snippet to your React JS project.
 
-## Install
+## Privacy Features
 
-`npm install --save hardal`
+Hardal includes built-in privacy protection features:
 
-or
+- Automatic PII redaction from URLs and query parameters
+- Privacy-aware device fingerprinting
+- Configurable data collection options
+- No cookies required for basic tracking
 
-`yarn add hardal`
+## Event Data Structure
 
-## How to use
+Events tracked with Hardal include:
 
-### Import module
-```js
-//index.ts
-import SendToHardal from 'hardal'
+- Distinct ID (privacy-preserving identifier)
+- Page information (URL, title, referrer)
+- Device and browser details
+- Screen and viewport information
+- Timezone
+- Sanitized query parameters
 
-```
+## Browser Support
 
-### Send your custom events
-```js
-//index.ts
- const sendCustomEvent = () => {
-    const config = {
-      apiKey: '',
-      customDomain: '',
-      projectId: 372905,
-      eventType: 'click-request-demo',
-      eventValue: '',
-      eventData: {
-        path: window.location.pathname,
-        referrer: document.referrer,
-        position: 'header',
-        isUserLogin: false,
-        // Add any properties as needed
-      },
-    };
-    SendToHardal(config);
-  }
-```
-In the above example, the sendCustomEvent function is called with a configuration object named config. The configuration object includes the following properties:
+Hardal supports all modern browsers:
 
-- `apiKey`: Your Hardal API key. Replace 'YOUR_API_KEY' with your actual API key. To get create your *Hardal* account, raise a request [here](https://usehardal.com/).
-- `customDomain`: Add your custom domain to bypassing adblocker and more data accuracy through server-side. e.g., 'ss.yourdomain.com').
-- `projectId`: The ID of the project to which you want to send the event.
-- `eventType`: The type of the event (e.g., 'click-request-demo').
-- `eventValue`: The value associated with the event (leave it as an empty string for now, or provide a specific value if needed).
-- `eventData`: An object containing additional data related to the event, such as path, referrer, product SKU, user type or any value. You can add more properties to the eventData object as needed.
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- Documentation: [https://usehardal.com/docs](https://usehardal.com/docs)
+- Issues: [GitHub Issues](https://github.com/yourusername/hardal/issues)
+- Email: support@usehardal.com
+
+## Security
+
+For security concerns, please email security@usehardal.com.
+
