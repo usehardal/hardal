@@ -1,26 +1,32 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
-  output: {
-    filename: 'hardal.min.js',
-    path: path.resolve(__dirname, 'dist'),
-    library: 'hardal',
-    libraryTarget: 'umd',
-    globalObject: 'this'
-  },
+  entry: './src/Hardal.ts',
+  mode: 'production',
+  devtool: 'source-map',
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.tsx?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      }
-    ]
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+  output: {
+    filename: 'index.js',
+    path: path.resolve(__dirname, 'dist'),
+    library: {
+      name: 'Hardal',
+      type: 'umd',
+      export: 'default',
+    },
+    globalObject: 'this',
+  },
+  optimization: {
+    minimize: true
   }
 }; 
