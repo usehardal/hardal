@@ -10,7 +10,44 @@
 
 An official plugin to add the [Hardal](https://usehardal.com/) tracking snippet to your React JS project.
 
-## Privacy Features
+
+## Installation
+
+```bash
+npm install @hardal/react
+```
+
+### Install the plugin in your project:
+
+```jsx
+import { HardalProvider } from '@hardal/react';
+function App() {
+return (
+<HardalProvider projectId="your-project-id">
+{/ Your app components /}
+</HardalProvider>
+);
+}
+```
+
+### Send events anywhere in your components:
+
+```jsx
+import { useHardal } from '@hardal/react';
+function MyComponent() {
+const { track } = useHardal();
+const handleClick = () => {
+track('button_clicked', {
+buttonName: 'submit',
+page: 'homepage'
+});
+};
+return <button onClick={handleClick}>Click me</button>;
+}
+```
+
+
+  ## Privacy Features
 
 Hardal includes built-in privacy protection features:
 
@@ -30,14 +67,6 @@ Events tracked with Hardal include:
 - Timezone
 - Sanitized query parameters
 
-## Browser Support
-
-Hardal supports all modern browsers:
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
 
 ## Contributing
 

@@ -1,7 +1,7 @@
 {
   "name": "hardal",
-  "version": "1.0.0",
-  "description": "Analytics tracking library",
+  "version": "1.2.1",
+  "description": "Connect your first-party data from any source to any destination for websites and mobile apps with server-side.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
