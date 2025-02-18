@@ -6,71 +6,72 @@
 
 # Hardal
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![version](https://img.shields.io/badge/version-1.0.0-green.svg)](https://semver.org)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![version](https://img.shields.io/badge/version-1.2.02-green.svg)](https://semver.org)
 
-An official plugin to add the [Hardal](https://usehardal.com/) tracking snippet to your React JS project.
+An official plugin to add the [Hardal](https://usehardal.com/) tracking server-side events to your React or Next.js project.
 
+## What is Hardal?
+
+[Hardal](https://usehardal.com/) is a server-side platform for connecting your first-party data from any source to any destination for websites and mobile apps.
 
 ## Installation
 
 ```bash
-npm install @hardal/react
+npm install hardal
 ```
 
-### Install the plugin in your project:
+## Usage
 
-```jsx
-import { HardalProvider } from '@hardal/react';
-function App() {
-return (
-<HardalProvider projectId="your-project-id">
-{/ Your app components /}
-</HardalProvider>
-);
-}
-```
+First, set up Hardal in your project:
 
-### Send events anywhere in your components:
+```typescript
+// lib/hardal.ts
+import Hardal from '../hardal/index.js'
 
-```jsx
-import { useHardal } from '@hardal/react';
-function MyComponent() {
-const { track } = useHardal();
-const handleClick = () => {
-track('button_clicked', {
-buttonName: 'submit',
-page: 'homepage'
-});
+const isClient = typeof window !== 'undefined';
+export const hardal = isClient
+  ? new Hardal({
+      endpoint: process.env.NEXT_PUBLIC_HARDAL_ENDPOINT,
+      autoPageview: true,
+      fetchFromDataLayer: true,
+      // other options...
+    })
+  : null;
+
+// Helper function to safely use hardal
+export const track = (eventName: string, properties?: Record<string, any>) => {
+  if (hardal) {
+    hardal.track(eventName, properties);
+  }
 };
-return <button onClick={handleClick}>Click me</button>;
-}
+
+export default hardal;
 ```
 
+Then use it in your components:
 
-  ## Privacy Features
+```jsx
+"use client"
+import { track } from '@/lib/hardal';
 
-Hardal includes built-in privacy protection features:
+export const MyComponent = () => {
+  const eventHandler = () => {
+    track('button_click', {
+      type: 'submit',
+      page: '/checkout',
+      package: 'premium',
+      ...// any other properties
+      
+    });
+  }
 
-- Automatic PII redaction from URLs and query parameters
-- Privacy-aware device fingerprinting
-- Configurable data collection options
-- No cookies required for basic tracking
-
-## Event Data Structure
-
-Events tracked with Hardal include:
-
-- Distinct ID (privacy-preserving identifier)
-- Page information (URL, title, referrer)
-- Device and browser details
-- Screen and viewport information
-- Timezone
-- Sanitized query parameters
-
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+  return (
+    <div>
+      <button onClick={eventHandler}>Send Event</button>
+    </div>
+  )
+}
+```
 
 ## License
 
@@ -78,11 +79,6 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Support
 
-- Documentation: [https://usehardal.com/docs](https://usehardal.com/docs)
-- Issues: [GitHub Issues](https://github.com/yourusername/hardal/issues)
+- Documentation: [https://docs.usehardal.com](https://usehardal.com)
 - Email: support@usehardal.com
-
-## Security
-
-For security concerns, please email security@usehardal.com.
 
