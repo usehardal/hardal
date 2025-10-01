@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hardal Click Tracking Example</title>
+</head>
+<body>
+  <h1>Hardal Click Tracking with Data Attributes</h1>
+  
+  <!-- Simple button tracking -->
+  <button data-hardal-event="cta_click">
+    Get Started
+  </button>
+  
+  <!-- Button with additional properties -->
+  <button 
+    data-hardal-event="signup_click" 
+    data-hardal-event-location="hero"
+    data-hardal-event-plan="free"
+  >
+    Sign Up Free
+  </button>
+  
+  <!-- Link tracking -->
+  <a 
+    href="/pricing" 
+    data-hardal-event="pricing_link"
+    data-hardal-event-source="navbar"
+  >
+    View Pricing
+  </a>
+  
+  <!-- External link tracking (opens in new tab) -->
+  <a 
+    href="https://docs.usehardal.com" 
+    target="_blank"
+    data-hardal-event="docs_link"
+    data-hardal-event-type="external"
+  >
+    Documentation
+  </a>
+  
+  <!-- Nested element tracking -->
+  <div 
+    data-hardal-event="feature_card_click"
+    data-hardal-event-feature="analytics"
+    style="cursor: pointer; padding: 20px; border: 1px solid #ccc;"
+  >
+    <h2>Analytics Feature</h2>
+    <p>Click anywhere on this card to track</p>
+    <button>Learn More</button>
+  </div>
+
+  <script src="path/to/hardal.js"></script>
+  <script>
+    // Initialize Hardal (if not using as npm package)
+    const hardal = new Hardal({
+      website: 'your-website-id',
+      hostUrl: 'https://your-hardal-host.com',
+      autoTrack: true
+    });
+
+    // Hardal will now automatically track all clicks on elements with data-hardal-event
+  </script>
+</body>
+</html>
+

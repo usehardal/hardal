@@ -1,0 +1,13 @@
+src/
+examples/
+*.md
+!README.md
+.gitignore
+tsconfig.json
+webpack.config.js
+webpack.browser.config.js
+test-*.js
+yarn.lock
+.git/
+node_modules/
+

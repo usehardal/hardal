@@ -1,5 +1,6 @@
 const path = require('path');
 
+// Browser bundle configuration (optional, for CDN usage)
 module.exports = {
   entry: './src/index.ts',
   mode: 'production',
@@ -17,7 +18,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'index.js',
+    filename: 'hardal.browser.js',
     path: path.resolve(__dirname, 'dist'),
     library: {
       name: 'Hardal',
@@ -28,5 +29,14 @@ module.exports = {
   },
   optimization: {
     minimize: true
-  }
-}; 
+  },
+  externals: {
+    react: {
+      commonjs: 'react',
+      commonjs2: 'react',
+      amd: 'react',
+      root: 'React',
+    },
+  },
+};
+

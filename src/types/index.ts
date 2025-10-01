@@ -1,10 +1,11 @@
 export interface HardalConfig {
-  endpoint: string;
-  autoPageview?: boolean;
-  fetchFromGA4?: boolean;
-  fetchFromFBPixel?: boolean;
-  fetchFromRTB?: boolean;
-  fetchFromDataLayer?: boolean;
+  website: string;
+  hostUrl?: string;
+  autoTrack?: boolean;
+  doNotTrack?: boolean;
+  excludeSearch?: boolean;
+  excludeHash?: boolean;
+  domains?: string[];
 }
 
 export interface EventQueueItem {
@@ -13,42 +14,41 @@ export interface EventQueueItem {
   reject: (error: any) => void;
 }
 
-export interface BaseEventData {
-  distinct: {
-    server_distinct_id: string;
-  };
-  page: {
-    url: string;
-    path: string;
-    title: string;
-    protocol: string;
-    hostname: string;
-    hash: string;
-    referrer: string;
-  };
-  screen: {
-    resolution: string;
-    color_depth: number;
-    pixel_depth: number;
-    viewport_size: string;
-    device_pixel_ratio: number;
-  };
-  browser: {
-    name: string;
-    version: string;
-    language: string;
-    platform: string;
-    vendor: string;
-    user_agent: string;
-  };
+export interface BasePayload {
+  website: string;
+  screen: string;
+  language: string;
+  title: string;
+  hostname: string;
+  url: string;
+  referrer: string;
+  distinct_id: string;
   device_type: string;
+  browser_name: string;
+  browser_version: string;
+  viewport_size: string;
+  device_pixel_ratio: number;
   timezone: string;
-  timestamp: string;
-  query_params: Record<string, any>;
+  platform: string;
+  created_at: Date;
+  timestamp: number;
+}
+
+export interface TrackEventPayload extends BasePayload {
+  name: string;
+  data?: Record<string, any>;
+}
+
+export interface HardalInstance {
+  track: (eventName: string | Record<string, any> | ((payload: BasePayload) => any), data?: Record<string, any>) => Promise<any>;
+  distinct: (data: Record<string, any>) => Promise<any>;
+  trackPageview: () => Promise<any>;
+  __VERSION: string;
 }
 
 declare global {
   interface Window {
+    hardal?: HardalInstance;
     dataLayer?: any[];
   }
 } 
