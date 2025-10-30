@@ -28,8 +28,11 @@ class Hardal {
       ...config,
     };
 
-    if (!this.config.website) {
-      throw new Error('[Hardal] No website ID provided in configuration');
+    if (!this.config.website && !this.config.signal) {
+      throw new Error('[Hardal] No website ID or signal provided in configuration');
+    }
+    if (this.config.website && this.config.signal) {
+      throw new Error('[Hardal] Both website ID and signal cannot be provided in configuration');
     }
 
     this.eventQueue = new EventQueue();
@@ -136,11 +139,15 @@ class Hardal {
   }
 
   private async getPayload(): Promise<BasePayload> {
+    const signal = this.config?.website || this.config?.signal;
+    if (!signal) {
+      throw new Error('[Hardal] No signal provided in configuration');
+    }
     const browserInfo = this.getBrowserInfo();
     const distinctId = await this.generateDistinctId();
 
     return {
-      website: this.config.website,
+      signal: signal,
       screen: `${window.screen.width}x${window.screen.height}`,
       language: navigator.language,
         title: document.title,
@@ -172,7 +179,7 @@ class Hardal {
     const { domains, doNotTrack } = this.config;
     return (
       this.disabled ||
-      !this.config.website ||
+      (!this.config.website && !this.config.signal) ||
       (localStorage && localStorage.getItem('hardal.disabled') === 'true') ||
       (domains && domains.length > 0 && !domains.includes(window.location.hostname)) ||
       (doNotTrack === true && this.hasDoNotTrack())

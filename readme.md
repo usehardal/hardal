@@ -14,13 +14,12 @@ An official plugin to add the [Hardal](https://usehardal.com/) tracking to your 
 
 [Hardal](https://usehardal.com/) is a privacy-first, server-side analytics platform that helps you:
 
-- 📊 **Track user behavior** without compromising privacy
-- 🔒 **Automatic PII redaction** from URLs and data
-- 🚀 **First-party data collection** - you own your data
-- 🎯 **Event tracking** with custom properties
-- 🔄 **Automatic pageview tracking** for SPAs and Next.js
-- 👤 **User identification** and segmentation
-- 🌐 **Works everywhere** - Vanilla JS, React, Next.js, Vue, etc.
+- **Track user behavior** without compromising privacy
+- **Automatic PII redaction** from URLs and data
+- **First-party data collection** - you own your data
+- **Event tracking** with custom properties
+- **Automatic pageview tracking** for SPAs and Next.js
+- **Works everywhere** - Vanilla JS, React, Next.js, Vue, etc.
 
 ## Installation
 
@@ -59,41 +58,18 @@ export function Providers({ children }: { children: React.ReactNode }) {
 ### For Vanilla JavaScript / HTML
 
 ```html
-<script src="https://cdn.example.com/hardal.browser.js"></script>
-<script>
-  const hardal = new Hardal({
-    website: 'your-website-id',
-    hostUrl: 'https://your-hardal-server.com',
-    autoTrack: true,
-  });
-</script>
+<script
+  defer
+  src="<YOUR_SIGNAL_ENDPOINT>/hardal"
+  data-website-id="<YOUR_SIGNAL_ID>"
+  data-host-url="<YOUR_SIGNAL_ENDPOINT>"
+  data-auto-track="true"
+></script>
 ```
 
-## Use Cases & Examples
+## Usage
 
-### 1. Track Button Clicks
-
-```tsx
-'use client';
-import { useHardal } from 'hardal/react';
-
-export function CTAButton() {
-  const { track } = useHardal();
-
-  return (
-    <button 
-      onClick={() => track('cta_clicked', { 
-        location: 'hero',
-        plan: 'premium' 
-      })}
-    >
-      Get Started
-    </button>
-  );
-}
-```
-
-### 2. Track Form Submissions
+### Example
 
 ```tsx
 'use client';
@@ -121,175 +97,6 @@ export function ContactForm() {
   };
 
   return <form onSubmit={handleSubmit}>{/* form fields */}</form>;
-}
-```
-
-### 3. Track E-commerce Events
-
-```tsx
-'use client';
-import { useHardal } from 'hardal/react';
-
-export function ProductCard({ product }: { product: Product }) {
-  const { track } = useHardal();
-
-  const handleAddToCart = () => {
-    track('add_to_cart', {
-      productId: product.id,
-      productName: product.name,
-      price: product.price,
-      category: product.category,
-    });
-  };
-
-  const handlePurchase = (orderId: string, total: number) => {
-    track('purchase_completed', {
-      orderId,
-      total,
-      items: cart.items,
-      paymentMethod: 'credit_card',
-    });
-  };
-
-  return (
-    <div>
-      <h3>{product.name}</h3>
-      <button onClick={handleAddToCart}>Add to Cart</button>
-    </div>
-  );
-}
-```
-
-### 4. User Identification
-
-```tsx
-'use client';
-import { useEffect } from 'react';
-import { useHardal } from 'hardal/react';
-
-export function UserProfile({ user }: { user: User }) {
-  const { distinct } = useHardal();
-
-  useEffect(() => {
-    // Identify user after authentication
-    if (user) {
-      distinct({
-        userId: user.id,
-        email: user.email,
-        plan: user.subscription?.plan,
-        signupDate: user.createdAt,
-        country: user.country,
-      });
-    }
-  }, [user, distinct]);
-
-  return <div>Welcome, {user.name}!</div>;
-}
-```
-
-### 5. Automatic Click Tracking (No Code!)
-
-Just add data attributes to your HTML:
-
-```tsx
-export function Navigation() {
-  return (
-    <nav>
-      {/* Automatically tracked on click */}
-      <a 
-        href="/pricing" 
-        data-hardal-event="nav_click"
-        data-hardal-event-section="header"
-        data-hardal-event-link="pricing"
-      >
-        Pricing
-      </a>
-  
-      <button
-        data-hardal-event="signup_click"
-        data-hardal-event-location="navbar"
-      >
-        Sign Up
-      </button>
-    </nav>
-  );
-}
-```
-
-### 6. Track Video Engagement
-
-```tsx
-'use client';
-import { useHardal } from 'hardal/react';
-
-export function VideoPlayer({ videoId }: { videoId: string }) {
-  const { track } = useHardal();
-
-  const handlePlay = () => {
-    track('video_played', { videoId, action: 'play' });
-  };
-
-  const handleComplete = () => {
-    track('video_completed', { videoId, duration: 120 });
-  };
-
-  return (
-    <video 
-      onPlay={handlePlay}
-      onEnded={handleComplete}
-    >
-      {/* video source */}
-    </video>
-  );
-}
-```
-
-### 7. Track Search Queries
-
-```tsx
-'use client';
-import { useState } from 'react';
-import { useHardal } from 'hardal/react';
-import { debounce } from 'lodash';
-
-export function SearchBar() {
-  const { track } = useHardal();
-  const [query, setQuery] = useState('');
-
-  const trackSearch = debounce((searchQuery: string) => {
-    track('search_performed', {
-      query: searchQuery,
-      resultsCount: results.length,
-    });
-  }, 500);
-
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-    if (value.length > 2) {
-      trackSearch(value);
-    }
-  };
-
-  return <input type="search" onChange={handleSearch} />;
-}
-```
-
-### 8. Track Feature Usage
-
-```tsx
-'use client';
-import { useHardalTracking } from 'hardal/react';
-
-export function DashboardWidget({ feature }: { feature: string }) {
-  // Track when component mounts (user viewed this feature)
-  useHardalTracking({
-    eventName: 'feature_viewed',
-    data: { feature, timestamp: Date.now() },
-    trackOnMount: true,
-  });
-
-  return <div>{/* widget content */}</div>;
 }
 ```
 

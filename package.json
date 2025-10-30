@@ -1,6 +1,6 @@
 {
   "name": "hardal",
-  "version": "3.6.6",
+  "version": "3.6.8",
   "description": "Connect your first-party data from any source to any destination for websites and mobile apps with server-side.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

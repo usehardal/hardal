@@ -1,5 +1,6 @@
 export interface HardalConfig {
-  website: string;
+  website?: string;
+  signal?: string;
   hostUrl?: string;
   autoTrack?: boolean;
   doNotTrack?: boolean;
@@ -15,7 +16,7 @@ export interface EventQueueItem {
 }
 
 export interface BasePayload {
-  website: string;
+  signal: string;
   screen: string;
   language: string;
   title: string;
