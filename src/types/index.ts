@@ -15,33 +15,64 @@ export interface EventQueueItem {
   reject: (error: any) => void;
 }
 
-export interface BasePayload {
-  signal: string;
-  screen: string;
-  language: string;
-  title: string;
-  hostname: string;
-  url: string;
-  referrer: string;
-  distinct_id: string;
-  device_type: string;
-  browser_name: string;
-  browser_version: string;
-  viewport_size: string;
-  device_pixel_ratio: number;
-  timezone: string;
-  platform: string;
-  created_at: Date;
-  timestamp: number;
+// Event payload for 'event' type tracking
+export interface EventPayload {
+  signal?: string;
+  website?: string;
+  name?: string;
+  browser_name?: string;
+  browser_version?: string;
+  os_version?: string;
+  device_pixel_ratio?: number;
+  device_type: string; // Required for event
+  hostname?: string;
+  language?: string;
+  platform?: string;
+  referrer?: string;
+  screen?: string;
+  title?: string;
+  url: string; // Required for event
+  viewport_width?: string;
+  timestamp: number; // Required for event
+  url_path?: string;
+  test?: boolean;
+  data?: any;
 }
 
-export interface TrackEventPayload extends BasePayload {
+// Identify payload for 'identify' type tracking
+export interface IdentifyPayload {
+  signal?: string;
+  website?: string;
+  data?: any;
+  name?: string;
+  browser_name?: string;
+  browser_version?: string;
+  os_version?: string;
+  device_pixel_ratio?: number;
+  device_type?: string;
+  hostname?: string;
+  language?: string;
+  platform?: string;
+  referrer?: string;
+  screen?: string;
+  title?: string;
+  url?: string;
+  viewport_width?: string;
+  timestamp?: number;
+  url_path?: string;
+  test?: boolean;
+}
+
+// Legacy type for backward compatibility
+export interface BasePayload extends EventPayload {}
+
+export interface TrackEventPayload extends EventPayload {
   name: string;
   data?: Record<string, any>;
 }
 
 export interface HardalInstance {
-  track: (eventName: string | Record<string, any> | ((payload: BasePayload) => any), data?: Record<string, any>) => Promise<any>;
+  track: (eventName?: string | Record<string, any> | ((payload: EventPayload) => any), data?: Record<string, any>) => Promise<any>;
   distinct: (data: Record<string, any>) => Promise<any>;
   trackPageview: () => Promise<any>;
   __VERSION: string;

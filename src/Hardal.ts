@@ -1,4 +1,4 @@
-import { HardalConfig, BasePayload, TrackEventPayload } from './types';
+import { HardalConfig, BasePayload, TrackEventPayload, EventPayload, IdentifyPayload } from './types';
 import { EventQueue } from './EventQueue';
 import { redactPIIFromURL } from './utils/privacy';
 
@@ -138,33 +138,46 @@ class Hardal {
     }
   }
 
-  private async getPayload(): Promise<BasePayload> {
+  private async getPayload(type: 'event'): Promise<EventPayload>;
+  private async getPayload(type: 'identify'): Promise<IdentifyPayload>;
+  private async getPayload(type: 'event' | 'identify' = 'event'): Promise<EventPayload | IdentifyPayload> {
     const signal = this.config?.website || this.config?.signal;
     if (!signal) {
       throw new Error('[Hardal] No signal provided in configuration');
     }
     const browserInfo = this.getBrowserInfo();
-    const distinctId = await this.generateDistinctId();
 
-    return {
+    const commonFields = {
       signal: signal,
       screen: `${window.screen.width}x${window.screen.height}`,
       language: navigator.language,
-        title: document.title,
-        hostname: window.location.hostname,
+      title: document.title,
+      hostname: window.location.hostname,
       url: this.currentUrl,
       referrer: this.currentRef,
-      distinct_id: distinctId,
       device_type: this.getDeviceType(),
       browser_name: browserInfo.browser,
       browser_version: browserInfo.version,
-      viewport_size: `${window.innerWidth}x${window.innerHeight}`,
+      viewport_width: `${window.innerWidth}x${window.innerHeight}`,
       device_pixel_ratio: window.devicePixelRatio,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       platform: navigator.platform,
-      created_at: new Date(),
       timestamp: Date.now(),
     };
+
+    if (type === 'event') {
+      // EventPayload has required fields: device_type, url, timestamp
+      return {
+        ...commonFields,
+        device_type: commonFields.device_type, // Explicitly required
+        url: commonFields.url, // Explicitly required
+        timestamp: commonFields.timestamp, // Explicitly required
+      } as EventPayload;
+    } else {
+      // IdentifyPayload has all optional fields
+      return {
+        ...commonFields,
+      } as IdentifyPayload;
+    }
   }
 
   private hasDoNotTrack(): boolean {
@@ -412,29 +425,30 @@ class Hardal {
   }
 
   public async track(
-    obj?: string | Record<string, any> | ((payload: BasePayload) => any),
+    obj?: string | Record<string, any> | ((payload: EventPayload) => any),
     data?: Record<string, any>
   ): Promise<any> {
-    const basePayload = await this.getPayload();
+    const eventPayload = await this.getPayload('event');
 
     if (typeof obj === 'string') {
       return this.send({
-        ...basePayload,
+        ...eventPayload,
         name: obj,
         data: typeof data === 'object' ? data : undefined,
       });
     } else if (typeof obj === 'object') {
       return this.send(obj);
     } else if (typeof obj === 'function') {
-      return this.send(obj(basePayload));
+      return this.send(obj(eventPayload));
     }
 
-    return this.send(basePayload);
+    return this.send(eventPayload);
   }
 
   public async distinct(data: Record<string, any>): Promise<any> {
+    const identifyPayload = await this.getPayload('identify');
     const payload = {
-      ...(await this.getPayload()),
+      ...identifyPayload,
       data,
       name: 'identify',
     };
