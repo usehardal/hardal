@@ -8,22 +8,26 @@
   </a>
 </p>
 
-# Hardal
+# Hardal JavaScript SDK
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.npmjs.com/package/hardal) [![npm version](https://img.shields.io/npm/v/hardal.svg)](https://www.npmjs.com/package/hardal)
+Collect pageviews and custom events from a website and send them to your Hardal Signal endpoint. The SDK supports browser JavaScript, React, and Next.js, with automatic tracking, user identification, and manual event APIs.
 
-The official JavaScript SDK for first-party analytics, with automatic pageview tracking, click tracking, and privacy-first data collection.
+[![Package license: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://www.npmjs.com/package/hardal) [![npm version](https://img.shields.io/npm/v/hardal.svg)](https://www.npmjs.com/package/hardal)
 
-## What is Hardal?
+## Getting started
+
+You need a browser application, a Hardal website ID, and a Signal endpoint that accepts `POST /push/hardal`. Set `website` and `hostUrl`, then follow the React/Next.js or HTML example below. React integrations run in the client and use the peer dependencies declared in [package.json](package.json).
+
+## Features
 
 [Hardal](https://usehardal.com/) is a privacy-first, server-side analytics platform that helps you:
 
-- **Track user behavior** without compromising privacy
-- **Automatic PII redaction** from URLs and data
+- **Track user behavior** through your configured Hardal endpoint
+- **Pattern-based PII redaction** from page and referrer URLs
 - **First-party data collection** - you own your data
 - **Event tracking** with custom properties
 - **Automatic pageview tracking** for SPAs and Next.js
-- **Works everywhere** - Vanilla JS, React, Next.js, Vue, etc.
+- **Browser integrations** - Vanilla JS, React, and Next.js examples
 
 ## Installation
 
@@ -35,7 +39,7 @@ bun add hardal
 yarn add hardal
 ```
 
-## Quick Start
+## Quick start
 
 ### For React/Next.js Apps (Recommended)
 
@@ -51,7 +55,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         website: 'YOUR_WEBSITE_ID',
         hostUrl: 'https://YOUR_SIGNAL_ENDPOINT',
       }}
-      autoPageTracking={true}  // ✅ Tracks all route changes
+      autoPageTracking={true}  // Track supported route changes
     >
       {children}
     </HardalProvider>
@@ -104,7 +108,7 @@ export function ContactForm() {
 }
 ```
 
-## Configuration Options
+## Configuration options
 
 ### HardalProvider (React/Next.js)
 
@@ -124,6 +128,8 @@ export function ContactForm() {
 ### Vanilla JS
 
 ```javascript
+import Hardal from 'hardal';
+
 const hardal = new Hardal({
   website: 'your-website-id',
   hostUrl: 'https://your-hardal-server.com',
@@ -142,7 +148,7 @@ hardal?.distinct({
 });
 ```
 
-### Manual Pageview Tracking
+### Manual pageview tracking
 
 ```typescript
 // Track a pageview manually
@@ -150,7 +156,7 @@ hardal?.trackPageview();
 
 ```
 
-## API Reference
+## API reference
 
 ### `new Hardal(config)`
 
@@ -159,7 +165,7 @@ Creates a new Hardal instance.
 **Config Options:**
 
 - `website` (required): Your Hardal website ID
-- `hostUrl` (optional): Custom host URL for your Hardal server
+- `hostUrl`: Your Hardal Signal URL; a valid HTTP(S) URL is required to send events
 - `autoTrack` (optional): Auto-track pageviews (default: `true`)
 
 ### `track(eventName, data?)`
@@ -186,7 +192,7 @@ Manually track a pageview.
 hardal.trackPageview();
 ```
 
-### Common Patterns
+## Common patterns
 
 ### Track A/B Test Variants
 
@@ -264,9 +270,9 @@ export function TimeTracker() {
 </HardalProvider>
 ```
 
-## Best Practices
+## Best practices
 
-✅ **DO:**
+### Recommended
 
 - Track meaningful user actions (clicks, form submissions, purchases)
 - Use descriptive event names (`checkout_completed`, not `event1`)
@@ -274,7 +280,7 @@ export function TimeTracker() {
 - Identify users after authentication
 - Test tracking in production-like environment
 
-❌ **DON'T:**
+### Avoid
 
 - Track PII (emails, phone numbers) directly - use `distinct()` for user identification
 - Send sensitive data in properties
@@ -282,39 +288,38 @@ export function TimeTracker() {
 - Use autoTrack in React apps - use `autoPageTracking` instead
 - Create multiple Hardal instances
 
-## Privacy & Security
+## Privacy and data handling
 
-Hardal automatically:
+- The SDK applies pattern-based redaction to page and referrer URLs for email addresses, selected phone-number formats, social security numbers, and credit-card-like numbers.
+- `doNotTrack: true` enables Do Not Track handling; it is disabled by default.
+- Events are sent to the configured `hostUrl`. Custom event properties and identification data require deliberate handling; URL redaction does not redact arbitrary event data.
 
-- 🔒 **Redacts PII** from URLs (emails, phone numbers, credit cards)
-- 🛡️ **Respects Do Not Track** when configured
-- 🔐 **Server-side processing** - no third-party trackers
-- 📊 **First-party cookies** - you own your data
-- ✅ **GDPR & CCPA friendly**
+Review [the URL redaction implementation](src/utils/privacy.ts) and your endpoint configuration when deciding which data to collect.
 
 ## Performance
 
-- 📦 **Lightweight**: ~18KB minified
-- ⚡ **Non-blocking**: Events sent asynchronously
-- 🚀 **Queue system**: No lost events during initialization
-- ⏱️ **5-second timeout**: Requests abort if server is slow
-- 🧹 **Memory safe**: Proper cleanup on unmount
+- Events are sent asynchronously through an in-memory queue.
+- Requests use a five-second abort timeout.
+- The React provider cleans up its tracking instance on unmount.
+- Bundle size depends on your build and imports; measure the artifact used by your application.
+
+The in-memory queue does not provide durable delivery. Handle network failures according to your integration requirements.
 
 ## Examples
 
-Check the `examples/` directory for complete examples:
+See [examples/](examples/) for complete examples:
 
-- **Next.js App Router** - `examples/nextjs-app-router.tsx`
-- **Next.js Pages Router** - `examples/nextjs-pages-router.tsx`
-- **React SPA** - `examples/react-spa.tsx`
-- **HTML Data Attributes** - `examples/data-attributes.html`
+- [Next.js App Router](examples/nextjs-app-router.tsx)
+- [Next.js Pages Router](examples/nextjs-pages-router.tsx)
+- [React SPA](examples/react-spa.tsx)
+- [HTML data attributes](examples/data-attributes.html)
 
 ## Troubleshooting
 
 ### "Browser freezes" or "Infinite loop"
 
-- ❌ Don't use `autoTrack: true` in the config for React apps
-- ✅ Use `autoPageTracking={true}` in `HardalProvider` instead
+- Don't use `autoTrack: true` in the config for React apps
+- Use `autoPageTracking={true}` in `HardalProvider` instead
 
 ### "No valid hostUrl configured"
 
@@ -337,13 +342,13 @@ Check the `examples/` directory for complete examples:
 ## Migration from v2.x
 
 ```tsx
-// ❌ Old way (v2.x)
+// Old way (v2.x)
 const hardal = new Hardal({
   endpoint: 'https://server.com',
   autoPageview: true,
 });
 
-// ✅ New way (v3.x)
+// New way (v3.x)
 <HardalProvider
   config={{
     website: 'your-id',
@@ -366,5 +371,9 @@ The `hardal` package is published under the MIT License. See the [package on npm
 
 ## Support
 
-- Documentation: https://docs.usehardal.com
-- Email: support@usehardal.com
+Maintained by [Hardal](https://github.com/usehardal).
+
+- [Hardal documentation](https://docs.usehardal.com)
+- [Report an issue](https://github.com/usehardal/hardal/issues)
+- [Hardal website](https://usehardal.com)
+
